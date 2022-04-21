@@ -45,9 +45,9 @@
     "jest": "^27.5.1",
     "path-browserify": "^1.0.1",
     "prettier": "^2.6.2",
-    "react": "16",
-    "react-dom": "16",
-    "react-test-renderer": "16",
+    "react": "17",
+    "react-dom": "17",
+    "react-test-renderer": "17",
     "webpack": "^5.72.0",
     "webpack-cli": "^4.9.2"
   },
