@@ -73,11 +73,9 @@ export class ReactLoadablePlugin {
 
   apply(compiler) {
     compiler.hooks.make.tap("ReactLoadableManifest", (compilation) => {
-      // @ts-ignore TODO: Remove ignore when webpack 5 is stable
       compilation.hooks.processAssets.tap(
         {
           name: "ReactLoadableManifest",
-          // @ts-ignore TODO: Remove ignore when webpack 5 is stable
           stage: webpack.Compilation.PROCESS_ASSETS_STAGE_ADDITIONS,
         },
         (assets) => {
