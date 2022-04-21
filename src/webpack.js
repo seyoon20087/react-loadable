@@ -65,7 +65,7 @@ export class ReactLoadablePlugin {
   }
 
   createAssets(compiler, compilation, assets) {
-    const manifest = buildManifest(compiler, compilation); // @ts-ignore: TODO: remove when webpack 5 is stable
+    const manifest = buildManifest(compiler, compilation);
 
     fs.writeFile(this.filename, JSON.stringify(manifest), () => {});
     return assets;
