@@ -1,6 +1,4 @@
-"use strict";
-const React = require("react");
-const PropTypes = require("prop-types");
+import React from "react";
 
 const ALL_INITIALIZERS = [];
 const READY_INITIALIZERS = [];
@@ -317,4 +315,4 @@ Loadable.preloadReady = () => {
   });
 };
 
-module.exports = Loadable;
+export default Loadable;

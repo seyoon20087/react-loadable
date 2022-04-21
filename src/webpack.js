@@ -1,7 +1,5 @@
-"use strict";
-
-const webpack = require("webpack");
-const fs = require("fs");
+import webpack from "webpack";
+import fs from "fs";
 
 function getModulesIterable(compilation, chunk) {
   return compilation.chunkGraph.getChunkModulesIterable(chunk);
@@ -91,11 +89,8 @@ export class ReactLoadablePlugin {
   }
 }
 
-function getBundles(manifest, moduleIds) {
+export function getBundles(manifest, moduleIds) {
   return moduleIds.reduce((bundles, moduleId) => {
     return bundles.concat(manifest[moduleId]);
   }, []);
 }
-
-exports.ReactLoadablePlugin = ReactLoadablePlugin;
-exports.getBundles = getBundles;
