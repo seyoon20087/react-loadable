@@ -87,7 +87,7 @@ declare namespace LoadableExport {
          *
          * Note: If you want to load multiple resources at once, you can also use `Loadable.Map`.
          *
-         * ```ts
+         * ```tsx
          * Loadable({
          *     // ...
          *     render(loaded, props) {
@@ -117,7 +117,7 @@ declare namespace LoadableExport {
          *
          * Note: If you want to load multiple resources at once, you can also use `Loadable.Map`.
          *
-         * ```ts
+         * ```tsx
          * Loadable({
          *     // ...
          *     render(loaded, props) {
@@ -169,7 +169,7 @@ declare namespace LoadableExport {
         /**
          * Check for modules that are already loaded in the browser and call the matching
          * `LoadableComponent.preload` methods.
-         * ```ts
+         * ```tsx
          * window.main = () => {
          *   Loadable.preloadReady().then(() => {
          *     ReactDOM.hydrate(
