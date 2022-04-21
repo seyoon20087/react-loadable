@@ -1,14 +1,16 @@
-{
-  "presets": [
+module.exports = function (api) {
+  api.cache(true);
+
+  const presets = [
     "@babel/preset-env",
     "@babel/preset-react"
-  ],
-  "plugins": [
+  ];
+  const plugins = [
     "dynamic-import-node",
     "@babel/plugin-proposal-class-properties",
     "../babel",
     [
-      "module-resolver",
+      require.resolve("babel-plugin-module-resolver"),
       {
         "alias": {
           "react-loadable": "./src/index.js",
@@ -16,5 +18,10 @@
         }
       }
     ]
-  ]
+  ];
+
+  return {
+    presets,
+    plugins
+  };
 }

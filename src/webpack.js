@@ -1,52 +1,93 @@
-'use strict';
-const url = require('url');
+"use strict";
 
-function buildManifest(compiler, compilation) {
-  let context = compiler.options.context;
+const webpack = require("webpack");
+const fs = require("fs");
+
+function getModulesIterable(compilation, chunk) {
+  return compilation.chunkGraph.getChunkModulesIterable(chunk);
+}
+
+function getModuleId(compilation, module) {
+  return compilation.chunkGraph.getModuleId(module);
+}
+
+function buildManifest(_compiler, compilation) {
   let manifest = {};
+  compilation.chunkGroups.forEach((chunkGroup) => {
+    if (chunkGroup.isInitial()) {
+      return;
+    }
 
-  compilation.chunks.forEach(chunk => {
-    chunk.files.forEach(file => {
-      chunk.forEachModule(module => {
-        let id = module.id;
-        let name = typeof module.libIdent === 'function' ? module.libIdent({ context }) : null;
-        let publicPath = url.resolve(compilation.outputOptions.publicPath || '', file);
-        
-        let currentModule = module;
-        if (module.constructor.name === 'ConcatenatedModule') {
-          currentModule = module.rootModule;
-        }
-        if (!manifest[currentModule.rawRequest]) {
-          manifest[currentModule.rawRequest] = [];
-        }
+    chunkGroup.origins.forEach((chunkGroupOrigin) => {
+      const { request } = chunkGroupOrigin;
+      chunkGroup.chunks.forEach((chunk) => {
+        chunk.files.forEach((file) => {
+          if (
+            !(
+              (file.endsWith(".js") || file.endsWith(".css")) &&
+              file.match(/^static\/(chunks|css)\//)
+            )
+          ) {
+            return;
+          }
 
-        manifest[currentModule.rawRequest].push({ id, name, file, publicPath });
+          for (const module of getModulesIterable(compilation, chunk)) {
+            let id = getModuleId(compilation, module);
+
+            if (!manifest[request]) {
+              manifest[request] = [];
+            } // Avoid duplicate files
+
+            if (
+              manifest[request].some(
+                (item) => item.id === id && item.file === file
+              )
+            ) {
+              continue;
+            }
+
+            manifest[request].push({
+              id,
+              file,
+            });
+          }
+        });
       });
     });
   });
-
+  manifest = Object.keys(manifest)
+    .sort() // eslint-disable-next-line no-sequences
+    .reduce((a, c) => ((a[c] = manifest[c]), a), {});
   return manifest;
 }
 
-class ReactLoadablePlugin {
-  constructor(opts = {}) {
+export class ReactLoadablePlugin {
+  constructor(opts) {
     this.filename = opts.filename;
   }
 
+  createAssets(compiler, compilation, assets) {
+    const manifest = buildManifest(compiler, compilation); // @ts-ignore: TODO: remove when webpack 5 is stable
+
+    fs.writeFile(this.filename, JSON.stringify(manifest), () => {});
+    return assets;
+  }
+
   apply(compiler) {
-    compiler.plugin('emit', (compilation, callback) => {
-      const manifest = buildManifest(compiler, compilation);
-      var json = JSON.stringify(manifest, null, 2);
-      compilation.assets[this.filename] = {      
-        source() {
-          return json;
+    compiler.hooks.make.tap("ReactLoadableManifest", (compilation) => {
+      // @ts-ignore TODO: Remove ignore when webpack 5 is stable
+      compilation.hooks.processAssets.tap(
+        {
+          name: "ReactLoadableManifest",
+          // @ts-ignore TODO: Remove ignore when webpack 5 is stable
+          stage: webpack.Compilation.PROCESS_ASSETS_STAGE_ADDITIONS,
         },
-        size() {
-          return json.length
+        (assets) => {
+          this.createAssets(compiler, compilation, assets);
         }
-      }
-      callback();
+      );
     });
+    return;
   }
 }
 
