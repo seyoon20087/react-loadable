@@ -250,7 +250,7 @@ function createLoadableComponent(loadFn, options) {
   }
   const ContextWrapper = (props) => (
     <LoadableContext.Consumer>
-      {(context) => <LoadableComponent props={props} report={context} />}
+      {(report) => <LoadableComponent props={props} report={report} />}
     </LoadableContext.Consumer>
   );
 
