@@ -5,18 +5,13 @@ module.exports = function (api) {
     [
       "@babel/preset-env",
       {
-        "loose": true
-      }
+        loose: true,
+      },
     ],
-    "@babel/preset-react"
-  ];
-  const plugins = [
-    "@babel/plugin-proposal-class-properties",
-    "@babel/plugin-transform-object-assign"
+    "@babel/preset-react",
   ];
 
   return {
     presets,
-    plugins
   };
-}
+};
