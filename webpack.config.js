@@ -1,15 +1,15 @@
-const path = require('path');
-const { ReactLoadablePlugin } = require('./webpack');
+const path = require("path");
+const { ReactLoadablePlugin } = require("./webpack");
 
 module.exports = {
   entry: {
-    main: './example/client',
+    main: "./example/client",
   },
   output: {
-    path: path.join(__dirname, 'example', 'dist'),
-    filename: '[name].js',
-    chunkFilename: '[name].js',
-    publicPath: '/dist/'
+    path: path.join(__dirname, "example", "dist"),
+    filename: "[name].js",
+    chunkFilename: "[name].js",
+    publicPath: "/dist/",
   },
   module: {
     rules: [
@@ -17,33 +17,38 @@ module.exports = {
         test: /\.js$/,
         exclude: /node_modules/,
         use: {
-          loader: 'babel-loader',
+          loader: "babel-loader",
           options: {
             babelrc: false,
             presets: [
-              ['@babel/preset-env', { modules: false }],
-              '@babel/preset-react',
+              ["@babel/preset-env", { modules: false }],
+              "@babel/preset-react",
             ],
             plugins: [
-              'syntax-dynamic-import',
-              '@babel/plugin-proposal-class-properties',
-              '@babel/plugin-transform-object-assign',
-              require.resolve('./babel'),
+              "syntax-dynamic-import",
+              "@babel/plugin-proposal-class-properties",
+              "@babel/plugin-transform-object-assign",
+              require.resolve("./babel"),
             ],
-          }
+          },
         },
       },
     ],
   },
-  devtool: 'inline-source-map',
+  devtool: "inline-source-map",
   resolve: {
     alias: {
-      'react-loadable': path.resolve(__dirname, 'src'),
+      "react-loadable": path.resolve(__dirname, "src"),
     },
   },
   plugins: [
     new ReactLoadablePlugin({
-      filename:  path.resolve(__dirname, 'example', 'dist', 'react-loadable.json'),
+      filename: path.resolve(
+        __dirname,
+        "example",
+        "dist",
+        "react-loadable.json"
+      ),
     }),
-  ]
+  ],
 };

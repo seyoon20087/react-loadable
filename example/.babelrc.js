@@ -1,10 +1,7 @@
 module.exports = function (api) {
   api.cache(true);
 
-  const presets = [
-    "@babel/preset-env",
-    "@babel/preset-react"
-  ];
+  const presets = ["@babel/preset-env", "@babel/preset-react"];
   const plugins = [
     "dynamic-import-node",
     "@babel/plugin-proposal-class-properties",
@@ -12,16 +9,16 @@ module.exports = function (api) {
     [
       require.resolve("babel-plugin-module-resolver"),
       {
-        "alias": {
+        alias: {
           "react-loadable": "./src/index.js",
-          "react-loadable-webpack": "./src/webpack.js"
-        }
-      }
-    ]
+          "react-loadable-webpack": "./src/webpack.js",
+        },
+      },
+    ],
   ];
 
   return {
     presets,
-    plugins
+    plugins,
   };
-}
+};

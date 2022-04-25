@@ -1,10 +1,10 @@
 ![React Loadable](http://thejameskyle.com/img/react-loadable-header.png)
 
-**IMPORTANT**: this is a minimalistic fork to solve the `componentWillMount` warning for the [facebook/docusaurus](https://github.com/facebook/docusaurus) project. 
+**IMPORTANT**: this is a minimalistic fork to solve the `componentWillMount` warning for the [facebook/docusaurus](https://github.com/facebook/docusaurus) project.
 
 We don't plan to maintain this problem, just get rid of the warning.
 
-----
+---
 
 > A higher order component for loading components with dynamic imports.
 
@@ -17,17 +17,17 @@ yarn add react-loadable
 ## Example
 
 ```js
-import Loadable from 'react-loadable';
-import Loading from './my-loading-component';
+import Loadable from "react-loadable";
+import Loading from "./my-loading-component";
 
 const LoadableComponent = Loadable({
-  loader: () => import('./my-component'),
+  loader: () => import("./my-component"),
   loading: Loading,
 });
 
 export default class App extends React.Component {
   render() {
-    return <LoadableComponent/>;
+    return <LoadableComponent />;
   }
 }
 ```
@@ -169,11 +169,11 @@ which lets you dynamically load any module before rendering it into your app.
 Let's imagine two components, one that imports and renders another.
 
 ```js
-import Bar from './components/Bar';
+import Bar from "./components/Bar";
 
 class Foo extends React.Component {
   render() {
-    return <Bar/>;
+    return <Bar />;
   }
 }
 ```
@@ -187,22 +187,22 @@ we can modify our component to load `Bar` asynchronously.
 ```js
 class MyComponent extends React.Component {
   state = {
-    Bar: null
+    Bar: null,
   };
 
   componentWillMount() {
-    import('./components/Bar').then(Bar => {
+    import("./components/Bar").then((Bar) => {
       this.setState({ Bar: Bar.default });
     });
   }
 
   render() {
-    let {Bar} = this.state;
+    let { Bar } = this.state;
     if (!Bar) {
       return <div>Loading...</div>;
     } else {
-      return <Bar/>;
-    };
+      return <Bar />;
+    }
   }
 }
 ```
@@ -213,18 +213,18 @@ What about when `import()` fails? What about server-side rendering?
 Instead you can use `Loadable` to abstract away the problem.
 
 ```js
-import Loadable from 'react-loadable';
+import Loadable from "react-loadable";
 
 const LoadableBar = Loadable({
-  loader: () => import('./components/Bar'),
+  loader: () => import("./components/Bar"),
   loading() {
-    return <div>Loading...</div>
-  }
+    return <div>Loading...</div>;
+  },
 });
 
 class MyComponent extends React.Component {
   render() {
-    return <LoadableBar/>;
+    return <LoadableBar />;
   }
 }
 ```
@@ -251,7 +251,7 @@ function Loading() {
 }
 
 Loadable({
-  loader: () => import('./WillFailToLoad'), // oh no!
+  loader: () => import("./WillFailToLoad"), // oh no!
   loading: Loading,
 });
 ```
@@ -268,7 +268,11 @@ will be `null`).
 ```js
 function Loading(props) {
   if (props.error) {
-    return <div>Error! <button onClick={ props.retry }>Retry</button></div>;
+    return (
+      <div>
+        Error! <button onClick={props.retry}>Retry</button>
+      </div>
+    );
   } else {
     return <div>Loading...</div>;
   }
@@ -291,7 +295,11 @@ which will only be true once the component has taken longer to load than a set
 ```js
 function Loading(props) {
   if (props.error) {
-    return <div>Error! <button onClick={ props.retry }>Retry</button></div>;
+    return (
+      <div>
+        Error! <button onClick={props.retry}>Retry</button>
+      </div>
+    );
   } else if (props.pastDelay) {
     return <div>Loading...</div>;
   } else {
@@ -305,7 +313,7 @@ This delay defaults to `200ms` but you can also customize the
 
 ```js
 Loadable({
-  loader: () => import('./components/Bar'),
+  loader: () => import("./components/Bar"),
   loading: Loading,
   delay: 300, // 0.3 seconds
 });
@@ -324,9 +332,17 @@ The [loading component](#loadingcomponent) will receive a
 ```js
 function Loading(props) {
   if (props.error) {
-    return <div>Error! <button onClick={ props.retry }>Retry</button></div>;
+    return (
+      <div>
+        Error! <button onClick={props.retry}>Retry</button>
+      </div>
+    );
   } else if (props.timedOut) {
-    return <div>Taking a long time... <button onClick={ props.retry }>Retry</button></div>;
+    return (
+      <div>
+        Taking a long time... <button onClick={props.retry}>Retry</button>
+      </div>
+    );
   } else if (props.pastDelay) {
     return <div>Loading...</div>;
   } else {
@@ -340,7 +356,7 @@ However, this feature is disabled by default. To turn it on, you can pass a
 
 ```js
 Loadable({
-  loader: () => import('./components/Bar'),
+  loader: () => import("./components/Bar"),
   loading: Loading,
   timeout: 10000, // 10 seconds
 });
@@ -354,11 +370,11 @@ If you want to customize this behavior you can use the
 
 ```js
 Loadable({
-  loader: () => import('./my-component'),
+  loader: () => import("./my-component"),
   render(loaded, props) {
     let Component = loaded.namedExport;
-    return <Component {...props}/>;
-  }
+    return <Component {...props} />;
+  },
 });
 ```
 
@@ -374,13 +390,13 @@ To make it easier to load multiple resources in parallel, you can use
 ```js
 Loadable.Map({
   loader: {
-    Bar: () => import('./Bar'),
-    i18n: () => fetch('./i18n/bar.json').then(res => res.json()),
+    Bar: () => import("./Bar"),
+    i18n: () => fetch("./i18n/bar.json").then((res) => res.json()),
   },
   render(loaded, props) {
     let Bar = loaded.Bar.default;
     let i18n = loaded.i18n;
-    return <Bar {...props} i18n={i18n}/>;
+    return <Bar {...props} i18n={i18n} />;
   },
 });
 ```
@@ -402,7 +418,7 @@ The component created by `Loadable` exposes a
 
 ```js
 const LoadableBar = Loadable({
-  loader: () => import('./Bar'),
+  loader: () => import("./Bar"),
   loading: Loading,
 });
 
@@ -420,14 +436,12 @@ class MyComponent extends React.Component {
   render() {
     return (
       <div>
-        <button
-          onClick={this.onClick}
-          onMouseOver={this.onMouseOver}>
+        <button onClick={this.onClick} onMouseOver={this.onMouseOver}>
           Show Bar
         </button>
-        {this.state.showBar && <LoadableBar/>}
+        {this.state.showBar && <LoadableBar />}
       </div>
-    )
+    );
   }
 }
 ```
@@ -450,20 +464,20 @@ make server-side rendering work as if nothing is being loaded dynamically.
 Here's our starting server using [Express](https://expressjs.com/).
 
 ```js
-import express from 'express';
-import React from 'react';
-import ReactDOMServer from 'react-dom/server';
-import App from './components/App';
+import express from "express";
+import React from "react";
+import ReactDOMServer from "react-dom/server";
+import App from "./components/App";
 
 const app = express();
 
-app.get('/', (req, res) => {
+app.get("/", (req, res) => {
   res.send(`
     <!doctype html>
     <html lang="en">
       <head>...</head>
       <body>
-        <div id="app">${ReactDOMServer.renderToString(<App/>)}</div>
+        <div id="app">${ReactDOMServer.renderToString(<App />)}</div>
         <script src="/dist/main.js"></script>
       </body>
     </html>
@@ -471,7 +485,7 @@ app.get('/', (req, res) => {
 });
 
 app.listen(3000, () => {
-  console.log('Running on http://localhost:3000/');
+  console.log("Running on http://localhost:3000/");
 });
 ```
 
@@ -488,7 +502,7 @@ components are ready.
 ```js
 Loadable.preloadAll().then(() => {
   app.listen(3000, () => {
-    console.log('Running on http://localhost:3000/');
+    console.log("Running on http://localhost:3000/");
   });
 });
 ```
@@ -513,9 +527,9 @@ component is trying to load: [`opts.modules`](#optsmodules) and
 
 ```js
 Loadable({
-  loader: () => import('./Bar'),
-  modules: ['./Bar'],
-  webpack: () => [require.resolveWeak('./Bar')],
+  loader: () => import("./Bar"),
+  modules: ["./Bar"],
+  webpack: () => [require.resolveWeak("./Bar")],
 });
 ```
 
@@ -526,9 +540,7 @@ Just add the `react-loadable/babel` plugin to your Babel config:
 
 ```json
 {
-  "plugins": [
-    "react-loadable/babel"
-  ]
+  "plugins": ["react-loadable/babel"]
 }
 ```
 
@@ -545,14 +557,14 @@ For this, there is [`Loadable.Capture`](#loadablecapture) component which can
 be used to collect all the modules that were rendered.
 
 ```js
-import Loadable from 'react-loadable';
+import Loadable from "react-loadable";
 
-app.get('/', (req, res) => {
+app.get("/", (req, res) => {
   let modules = [];
 
   let html = ReactDOMServer.renderToString(
-    <Loadable.Capture report={moduleName => modules.push(moduleName)}>
-      <App/>
+    <Loadable.Capture report={(moduleName) => modules.push(moduleName)}>
+      <App />
     </Loadable.Capture>
   );
 
@@ -578,12 +590,12 @@ about our bundles.
 
 ```js
 // webpack.config.js
-import { ReactLoadablePlugin } from 'react-loadable/webpack';
+import { ReactLoadablePlugin } from "react-loadable/webpack";
 
 export default {
   plugins: [
     new ReactLoadablePlugin({
-      filename: './dist/react-loadable.json',
+      filename: "./dist/react-loadable.json",
     }),
   ],
 };
@@ -596,16 +608,16 @@ To convert from modules to bundles, import the [`getBundles`](#getbundles)
 method from `react-loadable/webpack` and the data from Webpack.
 
 ```js
-import Loadable from 'react-loadable';
-import { getBundles } from 'react-loadable/webpack'
-import stats from './dist/react-loadable.json';
+import Loadable from "react-loadable";
+import { getBundles } from "react-loadable/webpack";
+import stats from "./dist/react-loadable.json";
 
-app.get('/', (req, res) => {
+app.get("/", (req, res) => {
   let modules = [];
 
   let html = ReactDOMServer.renderToString(
-    <Loadable.Capture report={moduleName => modules.push(moduleName)}>
-      <App/>
+    <Loadable.Capture report={(moduleName) => modules.push(moduleName)}>
+      <App />
     </Loadable.Capture>
   );
 
@@ -630,11 +642,11 @@ This is easy to do with the [CommonsChunkPlugin](https://webpack.js.org/plugins/
 export default {
   plugins: [
     new webpack.optimize.CommonsChunkPlugin({
-      name: 'manifest',
-      minChunks: Infinity
-    })
-  ]
-}
+      name: "manifest",
+      minChunks: Infinity,
+    }),
+  ],
+};
 ```
 
 _Notice: As of Webpack 4 the CommonsChunkPlugin has been removed and the manifest doesn't need to be extracted anymore._
@@ -650,12 +662,14 @@ res.send(`
       <div id="app">${html}</div>
       <script src="/dist/manifest.js"></script>
       <script src="/dist/main.js"></script>
-      ${bundles.map(bundle => {
-        return `<script src="/dist/${bundle.file}"></script>`
-        // alternatively if you are using publicPath option in webpack config
-        // you can use the publicPath value from bundle, e.g:
-        // return `<script src="${bundle.publicPath}"></script>`
-      }).join('\n')}
+      ${bundles
+        .map((bundle) => {
+          return `<script src="/dist/${bundle.file}"></script>`;
+          // alternatively if you are using publicPath option in webpack config
+          // you can use the publicPath value from bundle, e.g:
+          // return `<script src="${bundle.publicPath}"></script>`
+        })
+        .join("\n")}
       <script>window.main();</script>
     </body>
   </html>
@@ -672,17 +686,16 @@ which on resolution means that we can hydrate our app.
 
 ```js
 // src/entry.js
-import React from 'react';
-import ReactDOM from 'react-dom';
-import Loadable from 'react-loadable';
-import App from './components/App';
+import React from "react";
+import ReactDOM from "react-dom";
+import Loadable from "react-loadable";
+import App from "./components/App";
 
 window.main = () => {
   Loadable.preloadReady().then(() => {
-    ReactDOM.hydrate(<App/>, document.getElementById('app'));
+    ReactDOM.hydrate(<App />, document.getElementById("app"));
   });
 };
-
 ```
 
 <h4 align="center">
@@ -706,7 +719,7 @@ while the module is unavailable.
 
 ```js
 const LoadableComponent = Loadable({
-  loader: () => import('./Bar'),
+  loader: () => import("./Bar"),
   loading: Loading,
   delay: 200,
   timeout: 10000,
@@ -725,14 +738,14 @@ needs a [`opts.render`](#optsrender) method.
 ```js
 Loadable.Map({
   loader: {
-    Bar: () => import('./Bar'),
-    i18n: () => fetch('./i18n/bar.json').then(res => res.json()),
+    Bar: () => import("./Bar"),
+    i18n: () => fetch("./i18n/bar.json").then((res) => res.json()),
   },
   render(loaded, props) {
     let Bar = loaded.Bar.default;
     let i18n = loaded.i18n;
-    return <Bar {...props} i18n={i18n}/>;
-  }
+    return <Bar {...props} i18n={i18n} />;
+  },
 });
 ```
 
@@ -747,7 +760,7 @@ A function returning a promise that loads your module.
 
 ```js
 Loadable({
-  loader: () => import('./Bar'),
+  loader: () => import("./Bar"),
 });
 ```
 
@@ -757,8 +770,8 @@ types of functions.
 ```js
 Loadable.Map({
   loader: {
-    Bar: () => import('./Bar'),
-    i18n: () => fetch('./i18n/bar.json').then(res => res.json()),
+    Bar: () => import("./Bar"),
+    i18n: () => fetch("./i18n/bar.json").then((res) => res.json()),
   },
 });
 ```
@@ -793,7 +806,7 @@ component. This defaults to `200`.
 
 ```js
 Loadable({
-  delay: 200
+  delay: 200,
 });
 ```
 
@@ -807,7 +820,7 @@ This is turned off by default.
 
 ```js
 Loadable({
-  timeout: 10000
+  timeout: 10000,
 });
 ```
 
@@ -825,8 +838,8 @@ and `props` which are the props passed to the
 Loadable({
   render(loaded, props) {
     let Component = loaded.default;
-    return <Component {...props}/>;
-  }
+    return <Component {...props} />;
+  },
 });
 ```
 
@@ -837,8 +850,8 @@ get with `require.resolveWeak`.
 
 ```js
 Loadable({
-  loader: () => import('./Foo'),
-  webpack: () => [require.resolveWeak('./Foo')],
+  loader: () => import("./Foo"),
+  webpack: () => [require.resolveWeak("./Foo")],
 });
 ```
 
@@ -850,8 +863,8 @@ An optional array with module paths for your imports.
 
 ```js
 Loadable({
-  loader: () => import('./my-component'),
-  modules: ['./my-component'],
+  loader: () => import("./my-component"),
+  modules: ["./my-component"],
 });
 ```
 
@@ -894,10 +907,18 @@ This is the component you pass to [`opts.loading`](#optsloading).
 function LoadingComponent(props) {
   if (props.error) {
     // When the loader has errored
-    return <div>Error! <button onClick={ props.retry }>Retry</button></div>;
+    return (
+      <div>
+        Error! <button onClick={props.retry}>Retry</button>
+      </div>
+    );
   } else if (props.timedOut) {
     // When the loader has taken longer than the timeout
-    return <div>Taking a long time... <button onClick={ props.retry }>Retry</button></div>;
+    return (
+      <div>
+        Taking a long time... <button onClick={props.retry}>Retry</button>
+      </div>
+    );
   } else if (props.pastDelay) {
     // When the loader has taken longer than the delay
     return <div>Loading...</div>;
@@ -940,7 +961,11 @@ A function prop passed to [`LoadingComponent`](#loadingcomponent) when the
 ```js
 function LoadingComponent(props) {
   if (props.error) {
-    return <div>Error! <button onClick={ props.retry }>Retry</button></div>;
+    return (
+      <div>
+        Error! <button onClick={props.retry}>Retry</button>
+      </div>
+    );
   } else {
     return <div>Loading...</div>;
   }
@@ -993,7 +1018,7 @@ modules in environments like the server.
 ```js
 Loadable.preloadAll().then(() => {
   app.listen(3000, () => {
-    console.log('Running on http://localhost:3000/');
+    console.log("Running on http://localhost:3000/");
   });
 });
 ```
@@ -1040,7 +1065,7 @@ Check for modules that are already loaded in the browser and call the matching
 
 ```js
 Loadable.preloadReady().then(() => {
-  ReactDOM.hydrate(<App/>, document.getElementById('app'));
+  ReactDOM.hydrate(<App />, document.getElementById("app"));
 });
 ```
 
@@ -1057,8 +1082,8 @@ rendered via React Loadable.
 let modules = [];
 
 let html = ReactDOMServer.renderToString(
-  <Loadable.Capture report={moduleName => modules.push(moduleName)}>
-    <App/>
+  <Loadable.Capture report={(moduleName) => modules.push(moduleName)}>
+    <App />
   </Loadable.Capture>
 );
 
@@ -1084,16 +1109,16 @@ you:
 **Input**
 
 ```js
-import Loadable from 'react-loadable';
+import Loadable from "react-loadable";
 
 const LoadableMyComponent = Loadable({
-  loader: () => import('./MyComponent'),
+  loader: () => import("./MyComponent"),
 });
 
 const LoadableComponents = Loadable.Map({
   loader: {
-    One: () => import('./One'),
-    Two: () => import('./Two'),
+    One: () => import("./One"),
+    Two: () => import("./Two"),
   },
 });
 ```
@@ -1101,22 +1126,22 @@ const LoadableComponents = Loadable.Map({
 **Output**
 
 ```js
-import Loadable from 'react-loadable';
-import path from 'path';
+import Loadable from "react-loadable";
+import path from "path";
 
 const LoadableMyComponent = Loadable({
-  loader: () => import('./MyComponent'),
-  webpack: () => [require.resolveWeak('./MyComponent')],
-  modules: [path.join(__dirname, './MyComponent')],
+  loader: () => import("./MyComponent"),
+  webpack: () => [require.resolveWeak("./MyComponent")],
+  modules: [path.join(__dirname, "./MyComponent")],
 });
 
 const LoadableComponents = Loadable.Map({
   loader: {
-    One: () => import('./One'),
-    Two: () => import('./Two'),
+    One: () => import("./One"),
+    Two: () => import("./Two"),
   },
-  webpack: () => [require.resolveWeak('./One'), require.resolveWeak('./Two')],
-  modules: [path.join(__dirname, './One'), path.join(__dirname, './Two')],
+  webpack: () => [require.resolveWeak("./One"), require.resolveWeak("./Two")],
+  modules: [path.join(__dirname, "./One"), path.join(__dirname, "./Two")],
 });
 ```
 
@@ -1130,12 +1155,12 @@ to provide you with a mapping of modules to bundles.
 
 ```js
 // webpack.config.js
-import { ReactLoadablePlugin } from 'react-loadable/webpack';
+import { ReactLoadablePlugin } from "react-loadable/webpack";
 
 export default {
   plugins: [
     new ReactLoadablePlugin({
-      filename: './dist/react-loadable.json',
+      filename: "./dist/react-loadable.json",
     }),
   ],
 };
@@ -1152,7 +1177,7 @@ A method exported by `react-loadable/webpack` for converting modules to
 bundles.
 
 ```js
-import { getBundles } from 'react-loadable/webpack';
+import { getBundles } from "react-loadable/webpack";
 
 let bundles = getBundles(stats, modules);
 ```
@@ -1175,30 +1200,35 @@ Specifying the same `loading` component or `delay` every time you use
 own Higher-Order Component (HOC) to set default options.
 
 ```js
-import Loadable from 'react-loadable';
-import Loading from './my-loading-component';
+import Loadable from "react-loadable";
+import Loading from "./my-loading-component";
 
 export default function MyLoadable(opts) {
-  return Loadable(Object.assign({
-    loading: Loading,
-    delay: 200,
-    timeout: 10000,
-  }, opts));
-};
+  return Loadable(
+    Object.assign(
+      {
+        loading: Loading,
+        delay: 200,
+        timeout: 10000,
+      },
+      opts
+    )
+  );
+}
 ```
 
 Then you can just specify a `loader` when you go to use it.
 
 ```js
-import MyLoadable from './MyLoadable';
+import MyLoadable from "./MyLoadable";
 
 const LoadableMyComponent = MyLoadable({
-  loader: () => import('./MyComponent'),
+  loader: () => import("./MyComponent"),
 });
 
 export default class App extends React.Component {
   render() {
-    return <LoadableMyComponent/>;
+    return <LoadableMyComponent />;
   }
 }
 ```
@@ -1206,17 +1236,17 @@ export default class App extends React.Component {
 Unfortunately at the moment using wrapped Loadable breaks [react-loadable/babel](#babel-plugin) so in such case you have to add required properties (`modules`, `webpack`) manually.
 
 ```js
-import MyLoadable from './MyLoadable';
+import MyLoadable from "./MyLoadable";
 
 const LoadableMyComponent = MyLoadable({
-  loader: () => import('./MyComponent'),
-  modules: ['./MyComponent'],
-  webpack: () => [require.resolveWeak('./MyComponent')],
+  loader: () => import("./MyComponent"),
+  modules: ["./MyComponent"],
+  webpack: () => [require.resolveWeak("./MyComponent")],
 });
 
 export default class App extends React.Component {
   render() {
-    return <LoadableMyComponent/>;
+    return <LoadableMyComponent />;
   }
 }
 ```
@@ -1232,24 +1262,28 @@ you care about:
 ```js
 let bundles = getBundles(stats, modules);
 
-let styles = bundles.filter(bundle => bundle.file.endsWith('.css'));
-let scripts = bundles.filter(bundle => bundle.file.endsWith('.js'));
+let styles = bundles.filter((bundle) => bundle.file.endsWith(".css"));
+let scripts = bundles.filter((bundle) => bundle.file.endsWith(".js"));
 
 res.send(`
   <!doctype html>
   <html lang="en">
     <head>
       ...
-      ${styles.map(style => {
-        return `<link href="/dist/${style.file}" rel="stylesheet"/>`
-      }).join('\n')}
+      ${styles
+        .map((style) => {
+          return `<link href="/dist/${style.file}" rel="stylesheet"/>`;
+        })
+        .join("\n")}
     </head>
     <body>
       <div id="app">${html}</div>
       <script src="/dist/main.js"></script>
-      ${scripts.map(script => {
-        return `<script src="/dist/${script.file}"></script>`
-      }).join('\n')}
+      ${scripts
+        .map((script) => {
+          return `<script src="/dist/${script.file}"></script>`;
+        })
+        .join("\n")}
     </body>
   </html>
 `);
