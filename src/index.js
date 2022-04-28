@@ -272,10 +272,6 @@ function LoadableMap(opts) {
 Loadable.Map = LoadableMap;
 
 class Capture extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     return (
       <LoadableContext.Provider value={this.props.report}>
