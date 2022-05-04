@@ -1,4 +1,4 @@
-import webpack from "webpack";
+import webpack, { sources } from "webpack";
 import fs from "fs";
 
 function getModulesIterable(compilation, chunk) {
@@ -67,7 +67,9 @@ export class ReactLoadablePlugin {
   createAssets(compiler, compilation, assets) {
     const manifest = buildManifest(compiler, compilation);
 
-    fs.writeFile(this.filename, JSON.stringify(manifest), () => {});
+    assets[this.filename] = new sources.RawSource(
+      JSON.stringify(manifest, null, 2)
+    );
     return assets;
   }
 
