@@ -1,5 +1,4 @@
 import webpack, { sources } from "webpack";
-import fs from "fs";
 
 function getModulesIterable(compilation, chunk) {
   return compilation.chunkGraph.getChunkModulesIterable(chunk);
