@@ -179,7 +179,7 @@ function createLoadableComponent(loadFn, options) {
 
       if (typeof opts.delay === "number") {
         if (opts.delay === 0) {
-          this.setState({ pastDelay: true });
+          this.state.pastDelay = true;
         } else {
           this._delay = setTimeout(() => {
             setStateWithMountCheck({ pastDelay: true });
@@ -269,19 +269,11 @@ function LoadableMap(opts) {
   return createLoadableComponent(loadMap, opts);
 }
 
-Loadable.Map = LoadableMap;
-
-class Capture extends React.Component {
-  render() {
-    return (
-      <LoadableContext.Provider value={this.props.report}>
-        {React.Children.only(this.props.children)}
-      </LoadableContext.Provider>
-    );
-  }
-}
-
-Loadable.Capture = Capture;
+const Capture = ({ report, children }) => (
+  <LoadableContext.Provider value={report}>
+    {React.Children.only(children)}
+  </LoadableContext.Provider>
+);
 
 function flushInitializers(initializers) {
   let promises = [];
@@ -298,17 +290,22 @@ function flushInitializers(initializers) {
   });
 }
 
-Loadable.preloadAll = () => {
+const preloadAll = () => {
   return new Promise((resolve, reject) => {
     flushInitializers(ALL_INITIALIZERS).then(resolve, reject);
   });
 };
 
-Loadable.preloadReady = () => {
+const preloadReady = () => {
   return new Promise((resolve, reject) => {
     // We always will resolve, errors should be handled within loading UIs.
     flushInitializers(READY_INITIALIZERS).then(resolve, resolve);
   });
 };
 
-export default Loadable;
+export default Object.assign(Loadable, {
+  preloadAll,
+  preloadReady,
+  Capture,
+  Map: LoadableMap,
+});

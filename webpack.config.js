@@ -2,6 +2,7 @@ const path = require("path");
 const { ReactLoadablePlugin } = require("./webpack");
 
 module.exports = {
+  mode: "development",
   entry: {
     main: "./example/client",
   },
@@ -43,12 +44,7 @@ module.exports = {
   },
   plugins: [
     new ReactLoadablePlugin({
-      filename: path.resolve(
-        __dirname,
-        "example",
-        "dist",
-        "react-loadable.json"
-      ),
+      filename: "react-loadable.json",
     }),
   ],
 };
